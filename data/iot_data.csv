@@ -1,0 +1,11 @@
+fecha,hora,plc_id,sensor,valor
+2025-05-25,11:35:16,1,temperature,88
+2025-05-25,11:35:16,1,humidity,44
+2025-05-25,11:35:19,1,temperature,48
+2025-05-25,11:35:19,1,humidity,15
+2025-05-25,11:35:22,1,temperature,75
+2025-05-25,11:35:22,1,humidity,24
+2025-05-25,11:35:25,1,temperature,9
+2025-05-25,11:35:25,1,humidity,39
+2025-05-25,11:35:28,1,temperature,68
+2025-05-25,11:35:28,1,humidity,24
