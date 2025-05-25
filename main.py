@@ -5,7 +5,7 @@ from models.server import Server
 import time
 
 ##Carreguem les dades
-data = load_data('config.json', 'r')
+data = load_data('config.json')
 
 ####Creem objectes plc, gateway, server
 if data:
