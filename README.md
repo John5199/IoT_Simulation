@@ -29,3 +29,19 @@ Aquest projecta simula de forma la transmisió d'informació d'uns sensors fins 
 
     - comando f{""}
         https://docs.python.org/es/3/reference/lexical_analysis.html#f-strings
+
+
+##En aquesta segona tasca s,ha creat la classe MibotTelegram aquest s'inicialitza i executa les seguents funcions:
+    -openCSVfile: el que fa aquesta funció es obrir l'arxiu de les dades i retorna una llista per tal de treballar-la.
+    -getNewData: el que fa es recollir la dada mes nova que posteriorment enviarem
+    -_addcomands: associa cada funcio amb la cadena que la fa executa desde telegram
+    -sendDataPeriodically: el que fa es envia la informacio de forma periodica
+    -subscribe: aquesta funcio guarda els usuaris que volen rebre la determinada informacio i els hi envia usant la funció del damunt
+    -getdata: envia la informacio obtinguda per getNewData i la envia al usuari en format json
+    -createalert: el seu funcionament es practicament el mateix el que subscribe pero enviant informacio diferent. Aquest com que al ennunciat no estava especificat nomes funciona si s'esta subscrit al sensor
+
+##La forma per executar els comandos es la seguent
+    -get_data: /get_data {"1": ["temperature"]}
+    -subscribe: /subscribe {"1": ["temperature"]}
+    -create_alert: /create_alert {"1": {"temperature": 60.0}}
+    si excedeix 60 s'envia el missatge d'error

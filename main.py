@@ -2,46 +2,52 @@ from utils.config_loader import load_data
 from models.plc import PLC
 from models.gateway import Gateway
 from models.server import Server
-import time
+from models.telegramBot import MiBotTelegram, TOKEN, GROUP_ID
+import asyncio
 
-##Carreguem les dades
-data = load_data('config.json')
 
-####Creem objectes plc, gateway, server
-if data:
+async def main():
+    data = load_data('config.json')
+    mibot = MiBotTelegram(TOKEN, GROUP_ID)
+    
+    await mibot.app.initialize()
+    await mibot.app.start()            
+    await mibot.app.updater.start_polling()
 
-    PLCS_arr = {
-        f"PLC_{plc['id']}": PLC(
-            plc["id"],
-            {sensor["type"]: None for sensor in plc["sensors"]},
-            plc["gateway_id"]
-        )
-        for plc in data["plcs"]
-    }
+    if data:
+        PLCS_arr = {
+            f"PLC_{plc['id']}": PLC(
+                plc["id"],
+                {sensor["type"]: None for sensor in plc["sensors"]},
+                plc["gateway_id"]
+            )
+            for plc in data["plcs"]
+        }
 
-    gateways_arr = {
-        f"Gateway_{gw['id']}": Gateway(gw["id"], gw["protocol"], gw["server_ip"])
-        for gw in data["gateways"]
-    }
+        gateways_arr = {
+            f"Gateway_{gw['id']}": Gateway(gw["id"], gw["protocol"], gw["server_ip"])
+            for gw in data["gateways"]
+        }
 
-    servers_arr = {
-        f"Server_{srv['ip']}": Server(srv["ip"])
-        for srv in data["servers"]
-    }
+        servers_arr = {
+            f"Server_{srv['ip']}": Server(srv["ip"])
+            for srv in data["servers"]
+        }
 
-##Establir relacions
-    while True:
-        for plc in PLCS_arr.values():
-            plc.readSensorData()
-            dt = plc.sendInfo()
+        while True:
+            for plc in PLCS_arr.values():
+                plc.readSensorData()
+                dt = plc.sendInfo()
 
-            gate = gateways_arr[f"Gateway_{plc.getIdSender()}"]
-            gate.receiveInfo(dt)
-            ds = gate.sendInfo()
+                gate = gateways_arr[f"Gateway_{plc.getIdSender()}"]
+                gate.receiveInfo(dt)
+                ds = gate.sendInfo()
 
-            server = servers_arr[f"Server_{gate.getIdSender()}"]
-            server.receiveInfo(ds)
-            server.storeData()
+                server = servers_arr[f"Server_{gate.getIdSender()}"]
+                server.receiveInfo(ds)
+                server.storeData()
 
-        time.sleep(3)
+            await asyncio.sleep(3)  # Usa sleep no bloqueante
 
+if __name__ == "__main__":
+    asyncio.run(main())
